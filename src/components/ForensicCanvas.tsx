@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SystemArchitectureOverlay } from "@/src/components/SystemArchitectureOverlay";
+import { useMetaLayer } from "@/src/hooks/useMetaLayer";
 import type {
   ForensicPayload,
   ImageVisualNode,
@@ -120,6 +121,23 @@ function VisualNodePanel({ node }: { node: VisualNode | undefined }) {
   );
 }
 
+function RawDataBlock({
+  testId,
+  value,
+}: {
+  testId: string;
+  value: unknown;
+}) {
+  return (
+    <pre
+      data-testid={testId}
+      className="overflow-x-auto rounded border border-zinc-300 bg-zinc-100 p-4 font-mono text-xs leading-5 text-zinc-800"
+    >
+      <code>{JSON.stringify(value, null, 2)}</code>
+    </pre>
+  );
+}
+
 function ArchitectureToggleIcon() {
   return (
     <svg
@@ -139,6 +157,7 @@ function ArchitectureToggleIcon() {
 }
 
 export function ForensicCanvas({ payload }: ForensicCanvasProps) {
+  const { isTransparent } = useMetaLayer();
   const initialConstraintId = payload.systemConstraints.items[0]?.id ?? null;
   const [activeConstraintId, setActiveConstraintId] = useState<string | null>(
     initialConstraintId,
@@ -161,6 +180,16 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
     [activeConstraint?.visualNodeId, payload.visualNodes.nodes],
   );
 
+  const narrativePayload = useMemo(
+    () => ({
+      title: payload.title,
+      context: payload.context,
+      activeConstraint: activeConstraint ?? null,
+      intervention: payload.intervention,
+    }),
+    [activeConstraint, payload.context, payload.intervention, payload.title],
+  );
+
   const toggleArchitectureMode = useCallback(() => {
     setIsArchitectureMode((current) => !current);
   }, []);
@@ -180,6 +209,30 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isVisualPaneHovered, toggleArchitectureMode]);
+
+  if (isTransparent) {
+    return (
+      <section
+        data-testid="forensic-canvas-layout"
+        className="grid min-h-[32rem] grid-cols-1 gap-6 lg:grid-cols-[minmax(18rem,1fr)_minmax(24rem,1.2fr)]"
+        style={{ display: "grid" }}
+      >
+        <aside
+          data-testid="forensic-narrative-pane"
+          className="rounded-xl border border-zinc-300 bg-zinc-100 p-4"
+        >
+          <RawDataBlock testId="forensic-raw-narrative" value={narrativePayload} />
+        </aside>
+
+        <div
+          data-testid="forensic-visual-pane"
+          className="rounded-xl border border-zinc-300 bg-zinc-100 p-4"
+        >
+          <RawDataBlock testId="forensic-raw-node" value={activeVisualNode ?? null} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
