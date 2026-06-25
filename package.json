@@ -7,21 +7,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node -e \"const fs=require('fs');const pkg=require('./package.json');const errors=[];if(!fs.existsSync('memories/_index.md'))errors.push('memories/_index.md missing');if(!fs.existsSync('memories/prompt_learnings.md'))errors.push('memories/prompt_learnings.md missing');const deps={...pkg.dependencies,...pkg.devDependencies};for(const name of['next','react','react-dom','tailwindcss']){if(!deps[name])errors.push('missing dependency: '+name);}if(!fs.existsSync('next.config.ts'))errors.push('next.config.ts missing');else{const config=fs.readFileSync('next.config.ts','utf8');if(!config.includes('export default'))errors.push('next.config.ts must export default');}if(errors.length){console.error('FAIL:',errors.join('; '));process.exit(1);}console.log('PASS: infrastructure checks');\""
+    "test": "node -e \"const fs=require('fs');const pkg=require('./package.json');const errors=[];if(!fs.existsSync('memories/_index.md'))errors.push('memories/_index.md missing');if(!fs.existsSync('memories/prompt_learnings.md'))errors.push('memories/prompt_learnings.md missing');const deps={...pkg.dependencies,...pkg.devDependencies};for(const name of['next','react','react-dom','tailwindcss']){if(!deps[name])errors.push('missing dependency: '+name);}if(!fs.existsSync('next.config.ts'))errors.push('next.config.ts missing');else{const config=fs.readFileSync('next.config.ts','utf8');if(!config.includes('export default'))errors.push('next.config.ts must export default');}if(errors.length){console.error('FAIL:',errors.join('; '));process.exit(1);}console.log('PASS: infrastructure checks');\" && vitest run",
+    "test:unit": "vitest run"
   },
   "dependencies": {
+    "framer-motion": "^12.41.0",
     "next": "16.2.7",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   }
 }
