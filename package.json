@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node -e \"const fs=require('fs');const pkg=require('./package.json');const errors=[];if(!fs.existsSync('memories/_index.md'))errors.push('memories/_index.md missing');if(!fs.existsSync('memories/prompt_learnings.md'))errors.push('memories/prompt_learnings.md missing');const deps={...pkg.dependencies,...pkg.devDependencies};for(const name of['next','react','react-dom','tailwindcss']){if(!deps[name])errors.push('missing dependency: '+name);}if(!fs.existsSync('next.config.ts'))errors.push('next.config.ts missing');else{const config=fs.readFileSync('next.config.ts','utf8');if(!config.includes('export default'))errors.push('next.config.ts must export default');}if(errors.length){console.error('FAIL:',errors.join('; '));process.exit(1);}console.log('PASS: infrastructure checks');\""
   },
   "dependencies": {
     "next": "16.2.7",
