@@ -6,64 +6,101 @@ const rawTruckerPathPayload: ForensicPayload = {
   },
   context: {
     narrative:
-      "Trucker Path's sales organization relied on disconnected internal tools, manual pipeline hygiene, and ad hoc reporting to forecast revenue. Leadership needed a faster loop from field activity to forecast confidence without adding headcount.",
+      "Trucker Path's sales organization managed revenue across disconnected pipeline views, scattered rep activity, and manual outreach prep. Leadership needed a single console that moved from pipeline visibility through team-wide action volume down to AI-guided outreach, ending with a ready-to-send draft for accounts like Sumter Hauling.",
   },
   systemConstraints: {
     items: [
       {
-        id: "tp-constraint-fragmented-stack",
-        label: "Fragmented revenue tooling",
+        id: "tp-constraint-pipeline-visibility",
+        label: "No unified pipeline view",
         description:
-          "CRM updates, pricing sheets, and outreach trackers lived in separate systems with no shared workflow state.",
-        visualNodeId: "tp-visual-tool-sprawl",
+          "Revenue leaders rebuilt pipeline health from exports and slides instead of one live overview of stage movement and coverage.",
+        visualNodeId: "tp-visual-pipeline-overview",
       },
       {
-        id: "tp-constraint-manual-forecasting",
-        label: "Manual forecast assembly",
+        id: "tp-constraint-team-activity",
+        label: "205 actions without shared context",
         description:
-          "Revenue reviews required reps and ops to rebuild pipeline snapshots in spreadsheets every week.",
-        visualNodeId: "tp-visual-forecast-loop",
+          "Field teams logged 205 weekly selling actions across tools with no shared view of who was working which accounts or why.",
+        visualNodeId: "tp-visual-team-usage",
       },
       {
-        id: "tp-constraint-slow-handoffs",
-        label: "Slow sales-to-ops handoffs",
+        id: "tp-constraint-action-triage",
+        label: "Unstructured action queue",
         description:
-          "Qualified opportunities stalled while teams reconciled ownership, stage definitions, and next-step accountability.",
-        visualNodeId: "tp-visual-handoff-map",
+          "Reps triaged follow-ups manually from inboxes and spreadsheets with no prioritized queue tied to pipeline state.",
+        visualNodeId: "tp-visual-action-queue",
+      },
+      {
+        id: "tp-constraint-outreach-guidance",
+        label: "No guided next-best-action",
+        description:
+          "Outreach decisions depended on rep memory instead of AI recommendations grounded in account signals and stage rules.",
+        visualNodeId: "tp-visual-ai-recommendation",
+      },
+      {
+        id: "tp-constraint-personalization",
+        label: "Slow account-specific drafting",
+        description:
+          "Personalized outreach for accounts like Sumter Hauling required manual email assembly instead of an AI-generated draft ready for review.",
+        visualNodeId: "tp-visual-ai-draft",
       },
     ],
   },
   intervention: {
     summary:
-      "Built internal tools that unified pipeline signals, automated forecast prep, and gave reps a single workspace for revenue-critical actions.",
+      "Built an internal revenue console that unified pipeline overview, team activity, prioritized actions, AI recommendations, and one-click draft generation for field reps.",
     outcomes: [
-      "Consolidated daily selling workflows into one internal console",
-      "Automated weekly forecast rollups from live CRM activity",
-      "Surfaced at-risk deals earlier with shared stage and ownership rules",
+      "Replaced fragmented pipeline reporting with a live overview dashboard",
+      "Surfaced 205+ weekly team actions in a single usage view",
+      "Routed reps through a prioritized action queue tied to CRM signals",
+      "Delivered AI next-best-action guidance before outreach",
+      "Generated account-specific email drafts such as Sumter Hauling for faster send-ready follow-up",
     ],
   },
   visualNodes: {
     nodes: [
       {
-        id: "tp-visual-tool-sprawl",
-        type: "diagram",
-        label: "Revenue tool sprawl",
-        content:
-          "CRM exports -> pricing spreadsheets -> manual outreach logs -> leadership slides",
-      },
-      {
-        id: "tp-visual-forecast-loop",
+        id: "tp-visual-pipeline-overview",
         type: "image",
-        label: "Forecast assembly workflow",
-        src: "",
-        alt: "Placeholder for the automated forecast assembly dashboard",
+        label: "Pipeline overview",
+        src: "/assets/truckerpath/pipeline-overview.png",
+        alt: "Trucker Path pipeline overview dashboard showing live stage movement and coverage",
       },
       {
-        id: "tp-visual-handoff-map",
+        id: "tp-visual-team-usage",
+        type: "image",
+        label: "Team usage",
+        src: "/assets/truckerpath/team-usage.png",
+        alt: "Team usage view showing 205 selling actions across the revenue organization",
+      },
+      {
+        id: "tp-visual-action-queue",
+        type: "image",
+        label: "Action queue",
+        src: "/assets/truckerpath/action-queue.jpg",
+        alt: "Prioritized action queue surfacing follow-ups tied to pipeline state",
+      },
+      {
+        id: "tp-visual-ai-recommendation",
+        type: "image",
+        label: "AI recommendation",
+        src: "/assets/truckerpath/ai-recommendation.jpg",
+        alt: "AI next-best-action recommendation grounded in account signals",
+      },
+      {
+        id: "tp-visual-ai-draft",
+        type: "image",
+        label: "AI email draft",
+        src: "/assets/truckerpath/ai-draft.jpg",
+        alt: "AI-generated outreach email draft for Sumter Hauling ready for rep review",
+      },
+      {
+        id: "tp-visual-legacy-diagram",
         type: "diagram",
-        label: "Sales-to-ops handoff map",
+        label: "Legacy revenue workflow",
         content:
-          "AE qualifies deal -> ops validates stage -> shared console assigns next action -> forecast updates automatically",
+          "CRM exports -> spreadsheet forecasts -> manual outreach logs -> leadership review slides",
       },
     ],
   },

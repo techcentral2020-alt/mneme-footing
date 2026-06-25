@@ -1,3 +1,5 @@
+- `2026-06-24-task-006-local-asset-injection` — Injected Trucker Path local screenshots, next/image crossfades, and five-step narrative payload (TASK 006)
+- `2026-06-24-task-005-system-architecture-overlay` — System architecture x-ray overlay with schema, Trucker Path pipeline graph, and ForensicCanvas toggle (TASK 005)
 - `2026-06-24-split-from-thinktank` — Separated TASK 001 memory/framework infrastructure from thinktank into fresh mneme-footing project
 - `2026-06-24-task-004-forensic-canvas` — Built forensic schema, Trucker Path payload, and ForensicCanvas split pane (TASK 004)
 - `2026-06-24-task-003-perspective-slider` — Built useAudioFeedback hook and PerspectiveSlider with Framer Motion spring toggle (TASK 003)

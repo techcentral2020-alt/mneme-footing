@@ -1,13 +1,21 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SystemArchitectureOverlay } from "@/src/components/SystemArchitectureOverlay";
-import type { ForensicPayload, SystemConstraint, VisualNode } from "@/src/types/forensic";
+import type {
+  ForensicPayload,
+  ImageVisualNode,
+  SystemConstraint,
+  VisualNode,
+} from "@/src/types/forensic";
 
 interface ForensicCanvasProps {
   payload: ForensicPayload;
 }
+
+const VISUAL_IMAGE_ASPECT_RATIO = "16 / 10";
 
 function findVisualNode(
   nodes: VisualNode[],
@@ -18,6 +26,75 @@ function findVisualNode(
   }
 
   return nodes.find((node) => node.id === nodeId);
+}
+
+function VisualImageFallback({
+  alt,
+  message,
+}: {
+  alt: string;
+  message: string;
+}) {
+  return (
+    <div
+      className="flex aspect-[16/10] w-full items-center justify-center rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500"
+      role="img"
+      aria-label={alt}
+    >
+      {message}
+    </div>
+  );
+}
+
+function VisualNodeImage({ node }: { node: ImageVisualNode }) {
+  const [hasLoadError, setHasLoadError] = useState(false);
+  const hasSource = node.src.trim().length > 0;
+
+  useEffect(() => {
+    setHasLoadError(false);
+  }, [node.id, node.src]);
+
+  if (!hasSource || hasLoadError) {
+    return (
+      <VisualImageFallback
+        alt={node.alt}
+        message={
+          hasSource
+            ? `Unable to load image for ${node.alt}`
+            : `Image unavailable for ${node.alt}`
+        }
+      />
+    );
+  }
+
+  return (
+    <div
+      className="relative w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+      style={{ aspectRatio: VISUAL_IMAGE_ASPECT_RATIO }}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={node.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={node.src}
+            alt={node.alt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-contain"
+            onError={() => {
+              setHasLoadError(true);
+            }}
+          />
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function VisualNodePanel({ node }: { node: VisualNode | undefined }) {
@@ -36,17 +113,8 @@ function VisualNodePanel({ node }: { node: VisualNode | undefined }) {
         <pre className="whitespace-pre-wrap rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700">
           {node.content}
         </pre>
-      ) : node.src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={node.src}
-          alt={node.alt}
-          className="max-h-[28rem] w-full rounded-lg border border-zinc-200 object-contain"
-        />
       ) : (
-        <p className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-sm text-zinc-500">
-          Image placeholder for {node.alt}
-        </p>
+        <VisualNodeImage node={node} />
       )}
     </article>
   );
