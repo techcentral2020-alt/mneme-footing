@@ -1,0 +1,1 @@
+- `2026-06-24-split-from-thinktank` — Separated TASK 001 memory/framework infrastructure from thinktank into fresh mneme-footing project
