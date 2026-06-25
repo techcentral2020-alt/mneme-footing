@@ -1,3 +1,4 @@
 - `2026-06-24-split-from-thinktank` — Separated TASK 001 memory/framework infrastructure from thinktank into fresh mneme-footing project
+- `2026-06-24-task-004-forensic-canvas` — Built forensic schema, Trucker Path payload, and ForensicCanvas split pane (TASK 004)
 - `2026-06-24-task-003-perspective-slider` — Built useAudioFeedback hook and PerspectiveSlider with Framer Motion spring toggle (TASK 003)
 - `2026-06-24-task-002-design-tokens` — Semantic color, spacing, and typography tokens in globals.css with Tailwind config alignment (TASK 002)

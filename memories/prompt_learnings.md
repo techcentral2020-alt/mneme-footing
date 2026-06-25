@@ -1,3 +1,8 @@
+Session: 2026-06-24-task-004-forensic-canvas
+Task type: feature
+What worked: Strict schema interfaces plus a throwing `validateForensicPayload` kept data and presentation cleanly separated; validating the Trucker Path payload at module load caught reference errors between constraints and visual nodes early.
+What failed or required correction: Component tests using `getByRole("button", { name: constraint.label })` failed because accessible names concatenate label and description — switched to regex partial matching.
+Suggested rule: For forensic canvas constraint buttons, query by regex on label only; keep image `src` blank with an explicit placeholder UI rather than rendering broken `<img>` tags.
 
 Session: 2026-06-24-task-003-perspective-slider
 Task type: feature
