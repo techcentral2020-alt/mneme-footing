@@ -1,3 +1,4 @@
+- `2026-06-24-task-007-meta-layer-transparency` — Global meta layer hook, TransparencyToggle, and ForensicCanvas raw JSON view (TASK 007)
 - `2026-06-24-task-006-local-asset-injection` — Injected Trucker Path local screenshots, next/image crossfades, and five-step narrative payload (TASK 006)
 - `2026-06-24-task-005-system-architecture-overlay` — System architecture x-ray overlay with schema, Trucker Path pipeline graph, and ForensicCanvas toggle (TASK 005)
 - `2026-06-24-split-from-thinktank` — Separated TASK 001 memory/framework infrastructure from thinktank into fresh mneme-footing project

@@ -1,3 +1,9 @@
+Session: 2026-06-24-task-007-meta-layer-transparency
+Task type: feature
+What worked: `useSyncExternalStore` with a module-level store gave global transparency state without Zustand or a Context provider; early return in `ForensicCanvas` cleanly bypassed architecture-mode `AnimatePresence` for a sudden raw aesthetic; integration tests in `useMetaLayer.test.tsx` covered toggle + canvas without touching `ForensicCanvas.test.tsx`.
+What failed or required correction: Vitest oxc rejected JSX in `useMetaLayer.test.ts` — renamed to `.tsx`. Hook-only `.ts` tests must avoid JSX or use `createElement`.
+Suggested rule: For global client state without new dependencies, prefer `useSyncExternalStore` + module store; co-locate meta-layer integration tests with the hook test file when component test files are off limits; use `.test.tsx` whenever tests render React components.
+
 Session: 2026-06-24-task-006-local-asset-injection
 Task type: feature
 What worked: Mapping five narrative constraints to `/assets/truckerpath/` paths with a fixed `16/10` aspect-ratio `next/image` container eliminated layout shift; inner `AnimatePresence` on `node.id` gave subtle crossfades without disturbing the outer architecture-mode toggle; explicit `onError` fallback avoided `next/image` crashes on missing assets.
