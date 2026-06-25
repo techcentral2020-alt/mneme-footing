@@ -52,6 +52,26 @@ const validPayload: ForensicPayload = {
       },
     ],
   },
+  systemArchitecture: [
+    {
+      id: "sys-intake",
+      label: "Pipeline intake",
+      type: "stable",
+      connections: ["sys-bottleneck"],
+    },
+    {
+      id: "sys-bottleneck",
+      label: "Manual reporting",
+      type: "bottleneck",
+      connections: ["sys-intervention"],
+    },
+    {
+      id: "sys-intervention",
+      label: "Unified tooling",
+      type: "intervention",
+      connections: [],
+    },
+  ],
 };
 
 describe("validateForensicPayload", () => {

@@ -67,6 +67,38 @@ const rawTruckerPathPayload: ForensicPayload = {
       },
     ],
   },
+  systemArchitecture: [
+    {
+      id: "tp-sys-field-activity",
+      label: "Field selling activity",
+      type: "stable",
+      connections: ["tp-sys-crm-signals"],
+    },
+    {
+      id: "tp-sys-crm-signals",
+      label: "CRM pipeline signals",
+      type: "stable",
+      connections: ["tp-sys-manual-forecast"],
+    },
+    {
+      id: "tp-sys-manual-forecast",
+      label: "Manual forecast assembly",
+      type: "bottleneck",
+      connections: ["tp-sys-unified-console"],
+    },
+    {
+      id: "tp-sys-unified-console",
+      label: "Unified revenue console",
+      type: "intervention",
+      connections: ["tp-sys-forecast-confidence"],
+    },
+    {
+      id: "tp-sys-forecast-confidence",
+      label: "Forecast confidence",
+      type: "stable",
+      connections: [],
+    },
+  ],
 };
 
 export const truckerPathPayload = validateForensicPayload(rawTruckerPathPayload);

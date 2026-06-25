@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { SystemArchitectureOverlay } from "@/src/components/SystemArchitectureOverlay";
 import type { ForensicPayload, SystemConstraint, VisualNode } from "@/src/types/forensic";
 
 interface ForensicCanvasProps {
@@ -50,11 +52,31 @@ function VisualNodePanel({ node }: { node: VisualNode | undefined }) {
   );
 }
 
+function ArchitectureToggleIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+    >
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="8.5" y="14" width="7" height="7" rx="1.5" />
+      <path d="M6.5 10v2.5M17.5 10v2.5M12 10v4" />
+    </svg>
+  );
+}
+
 export function ForensicCanvas({ payload }: ForensicCanvasProps) {
   const initialConstraintId = payload.systemConstraints.items[0]?.id ?? null;
   const [activeConstraintId, setActiveConstraintId] = useState<string | null>(
     initialConstraintId,
   );
+  const [isArchitectureMode, setIsArchitectureMode] = useState(false);
+  const [isVisualPaneHovered, setIsVisualPaneHovered] = useState(false);
 
   const activeConstraint = useMemo<SystemConstraint | undefined>(() => {
     return payload.systemConstraints.items.find(
@@ -70,6 +92,26 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
       ),
     [activeConstraint?.visualNodeId, payload.visualNodes.nodes],
   );
+
+  const toggleArchitectureMode = useCallback(() => {
+    setIsArchitectureMode((current) => !current);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code !== "Space" || !isVisualPaneHovered) {
+        return;
+      }
+
+      event.preventDefault();
+      toggleArchitectureMode();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isVisualPaneHovered, toggleArchitectureMode]);
 
   return (
     <section
@@ -144,9 +186,44 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
 
       <div
         data-testid="forensic-visual-pane"
-        className="rounded-xl border border-zinc-200 bg-white p-6"
+        className="relative rounded-xl border border-zinc-200 bg-white p-6"
+        onMouseEnter={() => setIsVisualPaneHovered(true)}
+        onMouseLeave={() => setIsVisualPaneHovered(false)}
       >
-        <VisualNodePanel node={activeVisualNode} />
+        <button
+          type="button"
+          data-testid="architecture-mode-toggle"
+          aria-label="Toggle system architecture view"
+          aria-pressed={isArchitectureMode}
+          onClick={toggleArchitectureMode}
+          className="absolute right-4 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-950"
+        >
+          <ArchitectureToggleIcon />
+        </button>
+
+        <AnimatePresence mode="wait">
+          {isArchitectureMode ? (
+            <motion.div
+              key="architecture-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SystemArchitectureOverlay nodes={payload.systemArchitecture} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="visual-node-panel"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VisualNodePanel node={activeVisualNode} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

@@ -1,3 +1,10 @@
+export interface SystemNode {
+  id: string;
+  label: string;
+  type: "stable" | "bottleneck" | "intervention";
+  connections: string[];
+}
+
 export interface Title {
   text: string;
 }
@@ -49,6 +56,7 @@ export interface ForensicPayload {
   systemConstraints: SystemConstraints;
   intervention: Intervention;
   visualNodes: VisualNodes;
+  systemArchitecture: SystemNode[];
 }
 
 function assertNonEmptyString(value: unknown, field: string): asserts value is string {
@@ -173,6 +181,66 @@ function validateIntervention(value: unknown): Intervention {
   return { summary: value.summary, outcomes };
 }
 
+const SYSTEM_NODE_TYPES = new Set<SystemNode["type"]>([
+  "stable",
+  "bottleneck",
+  "intervention",
+]);
+
+function validateSystemArchitecture(value: unknown): SystemNode[] {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new Error("systemArchitecture must contain at least one system node");
+  }
+
+  const nodes = value.map((node, index) => {
+    assertObject(node, `systemArchitecture[${index}]`);
+    assertNonEmptyString(node.id, `systemArchitecture[${index}].id`);
+    assertNonEmptyString(node.label, `systemArchitecture[${index}].label`);
+    assertNonEmptyString(node.type, `systemArchitecture[${index}].type`);
+
+    if (!SYSTEM_NODE_TYPES.has(node.type as SystemNode["type"])) {
+      throw new Error(
+        `systemArchitecture[${index}].type must be "stable", "bottleneck", or "intervention"`,
+      );
+    }
+
+    if (!Array.isArray(node.connections)) {
+      throw new Error(
+        `systemArchitecture[${index}].connections must be an array`,
+      );
+    }
+
+    const connections = node.connections.map((connectionId, connectionIndex) => {
+      assertNonEmptyString(
+        connectionId,
+        `systemArchitecture[${index}].connections[${connectionIndex}]`,
+      );
+      return connectionId;
+    });
+
+    return {
+      id: node.id,
+      label: node.label,
+      type: node.type as SystemNode["type"],
+      connections,
+    };
+  });
+
+  const nodeIds = new Set(nodes.map((node) => node.id));
+
+  nodes.forEach((node, index) => {
+    node.connections.forEach((connectionId) => {
+      if (!nodeIds.has(connectionId)) {
+        throw new Error(
+          `systemArchitecture[${index}] references missing node "${connectionId}"`,
+        );
+      }
+    });
+  });
+
+  return nodes;
+}
+
 export function validateForensicPayload(value: unknown): ForensicPayload {
   assertObject(value, "forensic payload");
 
@@ -185,6 +253,7 @@ export function validateForensicPayload(value: unknown): ForensicPayload {
     visualNodeIds,
   );
   const intervention = validateIntervention(value.intervention);
+  const systemArchitecture = validateSystemArchitecture(value.systemArchitecture);
 
   return {
     title,
@@ -192,5 +261,6 @@ export function validateForensicPayload(value: unknown): ForensicPayload {
     systemConstraints,
     intervention,
     visualNodes,
+    systemArchitecture,
   };
 }
