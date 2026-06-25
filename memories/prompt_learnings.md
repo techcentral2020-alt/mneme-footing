@@ -1,3 +1,15 @@
+Session: 2026-06-24-task-009-ui-refinement
+Task type: styling
+What worked: `h-screen` page shell + `min-h-0 overflow-hidden` main + `overflow-y-auto` left rail locked the right visual pane without touching React state; extracting `LAYOUT_CLASS` kept transparent and polished branches aligned; semantic tokens (`text-body`, `text-text-secondary`, `bg-surface`) replaced raw zinc classes cleanly.
+What failed or required correction: Sticky right pane alone was insufficient — root cause was page-level document scroll from `min-h-full` flex column with unconstrained main height.
+Suggested rule: For split-pane forensic layouts, always pair viewport-height shell (`h-screen` + `min-h-0`) with `overflow-y-auto` on the scroll column; add `lg:sticky lg:self-start` on the visual column as a secondary guard.
+
+Session: 2026-06-24-task-008-core-assembly
+Task type: feature
+What worked: Mount-only assembly in `app/page.tsx` kept component internals untouched; semantic token classes on `layout.tsx` body (`bg-background`, `text-text-primary`, `text-body`) satisfied TASK 002 integration without touching globals; `src/app/page.test.tsx` imports `@/app/page` and fits existing vitest `src/**/*.test` glob.
+What failed or required correction: Port 3000 was occupied by a stale dev server — killed PID and restarted. Interactive checks (spacebar, transparency, audio) verified via existing unit tests plus HTTP 200 asset/page curls.
+Suggested rule: Before `localhost:3000` verification, check for conflicting `next dev` processes; place page integration tests under `src/app/` when routes live in `app/` at repo root.
+
 Session: 2026-06-24-task-007-meta-layer-transparency
 Task type: feature
 What worked: `useSyncExternalStore` with a module-level store gave global transparency state without Zustand or a Context provider; early return in `ForensicCanvas` cleanly bypassed architecture-mode `AnimatePresence` for a sudden raw aesthetic; integration tests in `useMetaLayer.test.tsx` covered toggle + canvas without touching `ForensicCanvas.test.tsx`.

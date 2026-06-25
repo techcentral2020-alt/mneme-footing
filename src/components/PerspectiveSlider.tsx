@@ -27,22 +27,22 @@ export function PerspectiveSlider() {
       type="button"
       aria-pressed={isStory}
       onClick={handleToggle}
-      className="relative inline-flex h-10 w-52 items-center rounded-full border border-zinc-200 bg-zinc-100 p-1 text-sm font-medium text-zinc-600"
+      className="relative inline-flex h-7 w-36 items-center rounded-full bg-white/35 p-0.5 text-[11px] font-medium tracking-wide text-text-secondary backdrop-blur-md"
     >
       <span
-        className={`z-10 flex-1 text-center transition-colors ${!isStory ? "text-zinc-950" : ""}`}
+        className={`z-10 flex flex-1 items-center justify-center transition-colors ${!isStory ? "text-text-primary" : ""}`}
       >
         Builder
       </span>
       <span
-        className={`z-10 flex-1 text-center transition-colors ${isStory ? "text-zinc-950" : ""}`}
+        className={`z-10 flex flex-1 items-center justify-center transition-colors ${isStory ? "text-text-primary" : ""}`}
       >
         Story
       </span>
       <motion.div
         layout
-        className="absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-full bg-white shadow-sm"
-        animate={{ left: isStory ? "calc(50% + 0.125rem)" : "0.25rem" }}
+        className="absolute top-0.5 bottom-0.5 w-[calc(50%-0.125rem)] rounded-full bg-white/70 shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+        animate={{ left: isStory ? "calc(50% + 0.0625rem)" : "0.125rem" }}
         transition={SPRING_TRANSITION}
         data-testid="motion-indicator"
       />

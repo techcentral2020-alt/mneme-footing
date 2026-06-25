@@ -8,7 +8,7 @@ function EyeIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-3.5 w-3.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"
@@ -24,7 +24,7 @@ function CodeIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5"
+      className="h-3.5 w-3.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"
@@ -47,7 +47,7 @@ export function TransparencyToggle() {
       }
       aria-pressed={isTransparent}
       onClick={toggleTransparent}
-      className="fixed bottom-4 right-4 z-50 inline-flex h-10 w-10 transform-gpu items-center justify-center rounded-md border border-zinc-300 bg-white text-zinc-700 will-change-transform hover:border-zinc-400 hover:text-zinc-950"
+      className="fixed bottom-5 right-5 z-50 inline-flex h-8 w-8 transform-gpu items-center justify-center rounded-full bg-white/40 text-text-secondary backdrop-blur-md will-change-transform transition-colors hover:bg-white/55 hover:text-text-primary"
       style={{ transform: "translateZ(0)" }}
     >
       <AnimatePresence mode="wait" initial={false}>

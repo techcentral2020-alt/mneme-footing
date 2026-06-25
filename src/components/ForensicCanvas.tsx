@@ -18,6 +18,9 @@ interface ForensicCanvasProps {
 
 const VISUAL_IMAGE_ASPECT_RATIO = "16 / 10";
 
+const LAYOUT_CLASS =
+  "grid h-full min-h-0 grid-cols-1 gap-8 lg:grid-cols-[minmax(18rem,1fr)_minmax(22rem,1.15fr)]";
+
 function findVisualNode(
   nodes: VisualNode[],
   nodeId: string | undefined,
@@ -38,7 +41,7 @@ function VisualImageFallback({
 }) {
   return (
     <div
-      className="flex aspect-[16/10] w-full items-center justify-center rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500"
+      className="flex aspect-[16/10] w-full items-center justify-center rounded-lg bg-background/60 p-6 text-center text-small text-text-secondary"
       role="img"
       aria-label={alt}
     >
@@ -70,7 +73,7 @@ function VisualNodeImage({ node }: { node: ImageVisualNode }) {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+      className="relative w-full overflow-hidden rounded-lg bg-background/40"
       style={{ aspectRatio: VISUAL_IMAGE_ASPECT_RATIO }}
     >
       <AnimatePresence mode="wait">
@@ -101,17 +104,17 @@ function VisualNodeImage({ node }: { node: ImageVisualNode }) {
 function VisualNodePanel({ node }: { node: VisualNode | undefined }) {
   if (!node) {
     return (
-      <p className="text-sm text-zinc-500">
+      <p className="text-small text-text-secondary">
         Select a constraint to inspect its forensic visual.
       </p>
     );
   }
 
   return (
-    <article className="space-y-4">
-      <h3 className="text-lg font-semibold text-zinc-950">{node.label}</h3>
+    <article className="space-y-5">
+      <h3 className="text-h3 text-text-primary">{node.label}</h3>
       {node.type === "diagram" ? (
-        <pre className="whitespace-pre-wrap rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700">
+        <pre className="whitespace-pre-wrap rounded-lg bg-background/50 p-5 text-small leading-relaxed text-text-secondary">
           {node.content}
         </pre>
       ) : (
@@ -131,7 +134,7 @@ function RawDataBlock({
   return (
     <pre
       data-testid={testId}
-      className="overflow-x-auto rounded border border-zinc-300 bg-zinc-100 p-4 font-mono text-xs leading-5 text-zinc-800"
+      className="overflow-x-auto rounded-lg bg-background/70 p-4 font-mono text-[11px] leading-5 text-text-primary"
     >
       <code>{JSON.stringify(value, null, 2)}</code>
     </pre>
@@ -143,7 +146,7 @@ function ArchitectureToggleIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-4 w-4"
+      className="h-3.5 w-3.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"
@@ -214,19 +217,19 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
     return (
       <section
         data-testid="forensic-canvas-layout"
-        className="grid min-h-[32rem] grid-cols-1 gap-6 lg:grid-cols-[minmax(18rem,1fr)_minmax(24rem,1.2fr)]"
+        className={LAYOUT_CLASS}
         style={{ display: "grid" }}
       >
         <aside
           data-testid="forensic-narrative-pane"
-          className="rounded-xl border border-zinc-300 bg-zinc-100 p-4"
+          className="min-h-0 overflow-y-auto lg:pr-2"
         >
           <RawDataBlock testId="forensic-raw-narrative" value={narrativePayload} />
         </aside>
 
         <div
           data-testid="forensic-visual-pane"
-          className="rounded-xl border border-zinc-300 bg-zinc-100 p-4"
+          className="min-h-0 lg:sticky lg:top-0 lg:self-start"
         >
           <RawDataBlock testId="forensic-raw-node" value={activeVisualNode ?? null} />
         </div>
@@ -237,27 +240,25 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
   return (
     <section
       data-testid="forensic-canvas-layout"
-      className="grid min-h-[32rem] grid-cols-1 gap-6 lg:grid-cols-[minmax(18rem,1fr)_minmax(24rem,1.2fr)]"
+      className={LAYOUT_CLASS}
       style={{ display: "grid" }}
     >
       <aside
         data-testid="forensic-narrative-pane"
-        className="space-y-6 rounded-xl border border-zinc-200 bg-white p-6"
+        className="min-h-0 space-y-8 overflow-y-auto lg:pr-4"
       >
-        <header className="space-y-3">
-          <h2 className="text-2xl font-semibold text-zinc-950">
-            {payload.title.text}
-          </h2>
-          <p className="text-sm leading-6 text-zinc-600">
+        <header className="space-y-4">
+          <h2 className="text-h2 text-text-primary">{payload.title.text}</h2>
+          <p className="text-body leading-[1.75] text-text-secondary">
             {payload.context.narrative}
           </p>
         </header>
 
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+        <section className="space-y-4">
+          <h3 className="text-small font-medium uppercase tracking-[0.12em] text-text-secondary">
             System Constraints
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {payload.systemConstraints.items.map((constraint) => {
               const isActive = constraint.id === activeConstraintId;
 
@@ -267,18 +268,20 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => setActiveConstraintId(constraint.id)}
-                    className={`w-full rounded-lg border px-4 py-3 text-left transition-colors ${
+                    className={`w-full rounded-lg px-4 py-3.5 text-left transition-colors ${
                       isActive
-                        ? "border-zinc-900 bg-zinc-900 text-white"
-                        : "border-zinc-200 bg-zinc-50 text-zinc-900 hover:border-zinc-300"
+                        ? "bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+                        : "hover:bg-white/50"
                     }`}
                   >
-                    <span className="block text-sm font-medium">
+                    <span
+                      className={`block text-small font-medium ${isActive ? "text-text-primary" : "text-text-primary/80"}`}
+                    >
                       {constraint.label}
                     </span>
                     <span
-                      className={`mt-1 block text-xs leading-5 ${
-                        isActive ? "text-zinc-200" : "text-zinc-600"
+                      className={`mt-1.5 block text-[13px] leading-relaxed ${
+                        isActive ? "text-text-secondary" : "text-text-secondary/80"
                       }`}
                     >
                       {constraint.description}
@@ -290,14 +293,14 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
           </ul>
         </section>
 
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+        <section className="space-y-4">
+          <h3 className="text-small font-medium uppercase tracking-[0.12em] text-text-secondary">
             Intervention
           </h3>
-          <p className="text-sm leading-6 text-zinc-700">
+          <p className="text-body leading-[1.75] text-text-primary/90">
             {payload.intervention.summary}
           </p>
-          <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
+          <ul className="list-disc space-y-2 pl-5 text-body leading-[1.75] text-text-secondary">
             {payload.intervention.outcomes.map((outcome) => (
               <li key={outcome}>{outcome}</li>
             ))}
@@ -307,7 +310,7 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
 
       <div
         data-testid="forensic-visual-pane"
-        className="relative rounded-xl border border-zinc-200 bg-white p-6"
+        className="relative min-h-0 lg:sticky lg:top-0 lg:self-start"
         onMouseEnter={() => setIsVisualPaneHovered(true)}
         onMouseLeave={() => setIsVisualPaneHovered(false)}
       >
@@ -317,7 +320,7 @@ export function ForensicCanvas({ payload }: ForensicCanvasProps) {
           aria-label="Toggle system architecture view"
           aria-pressed={isArchitectureMode}
           onClick={toggleArchitectureMode}
-          className="absolute right-4 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-950"
+          className="absolute right-0 top-0 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/40 text-text-secondary backdrop-blur-md transition-colors hover:bg-white/55 hover:text-text-primary"
         >
           <ArchitectureToggleIcon />
         </button>
